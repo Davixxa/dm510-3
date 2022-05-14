@@ -1,4 +1,5 @@
 #include <fuse.h>
+#include <lfs_methods.c>
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
@@ -9,14 +10,17 @@ int lfs_readdir( const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_
 int lfs_open( const char *, struct fuse_file_info * );
 int lfs_read( const char *, char *, size_t, off_t, struct fuse_file_info * );
 int lfs_release(const char *path, struct fuse_file_info *fi);
+int lfs_mkdir(const char *path, mode_t mode);
+int lfs_rmdir(const char *path, struct fuse_file_info *fi);
+int lfs_mknod(const char *path, mode_t mode, dev_t device);
 
 static struct fuse_operations lfs_oper = {
 	.getattr	= lfs_getattr,
 	.readdir	= lfs_readdir,
-	.mknod = NULL,
-	.mkdir = NULL,
-	.unlink = NULL,
-	.rmdir = NULL,
+	.mknod = lfs_mknod, // mk file
+	.mkdir = lfs_mkdir,
+	.unlink = NULL, // rmfile
+	.rmdir = lfs_rmdir,
 	.truncate = NULL,
 	.open	= lfs_open,
 	.read	= lfs_read,
