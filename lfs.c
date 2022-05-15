@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* FUSE Things.*/
 int lfs_getattr( const char *, struct stat * );
 int lfs_readdir( const char *, void *, fuse_fill_dir_t, off_t, struct fuse_file_info * );
 int lfs_open( const char *, struct fuse_file_info * );
@@ -42,12 +43,24 @@ int lfs_getattr( const char *path, struct stat *stbuf ) {
 		stbuf->st_mode = S_IFREG | 0777;
 		stbuf->st_nlink = 1;
 		stbuf->st_size = 12;
+	} else if(is_file(path) == 1) {
+
+		stbuf->st_mode = S_IFREG | 0777;
+		stbuf->set_nlink = 1;
+		stbuf->st_size = get_file_size(path);
+
+	} else if(is_directory(path)) {
+		stbuf->st_mode = S_IFDIR | 0755;
+		stbuf->st_nlink = 2;
 	} else
 		res = -ENOENT;
 
 	return res;
 }
 
+/*
+* Initially, list everything in the root. Later on, if I have time, let the parent directory decide the fate of a file.
+*/
 int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi ) {
 	(void) offset;
 	(void) fi;
@@ -58,7 +71,9 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 
 	filler(buf, ".", NULL, 0);
 	filler(buf, "..", NULL, 0);
-	filler(buf, "hello", NULL, 0);
+
+
+	for()
 
 	return 0;
 }
@@ -81,6 +96,12 @@ int lfs_release(const char *path, struct fuse_file_info *fi) {
 }
 
 int main( int argc, char *argv[] ) {
+	
+	// Write binary
+	disk = fopen("lfs_img.img", "r+b");
+
+	
+
 	fuse_main( argc, argv, &lfs_oper );
 
 	return 0;
