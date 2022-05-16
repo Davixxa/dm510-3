@@ -49,6 +49,8 @@ int lfs_getattr( const char *path, struct stat *stbuf ) {
 		stbuf->st_mode = S_IFREG | 0777;
 		stbuf->st_nlink = 1;
 		stbuf->st_size = get_file_size(path);
+		stbuf->st_atime = get_file_by_index(get_file_index(path))->last_accessed_timestamp;
+		stbuf->st_mtime = get_file_by_index(get_file_index(path))->last_modified_timestamp;
 
 	} else if(is_directory(path)) {
 		stbuf->st_mode = S_IFDIR | 0755;
@@ -89,7 +91,8 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 // Theoretically this doesn't really do anything but it does provide the system with a file.
 int lfs_open( const char *path, struct fuse_file_info *fi ) {
     printf("open: (path=%s)\n", path);
-	return get_current_file_index(get_file_index(path)); 
+	fi->
+	return 0; 
 }
 
 
