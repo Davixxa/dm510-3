@@ -14,7 +14,7 @@ typedef struct folder_list_entry {
     uint64_t parent_folder_id; // NULL if root
 
     
-}
+};
 
 
 typedef struct file_list_entry {
