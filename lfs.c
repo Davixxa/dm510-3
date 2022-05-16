@@ -1,5 +1,5 @@
 #include <fuse.h>
-#include <lfs_methods.c>
+#include "lfs_methods.c"
 #include <errno.h>
 #include <string.h>
 #include <stdio.h>
