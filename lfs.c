@@ -47,7 +47,7 @@ int lfs_getattr( const char *path, struct stat *stbuf ) {
 	} else if(is_file(path) == 1) {
 
 		stbuf->st_mode = S_IFREG | 0777;
-		stbuf->set_nlink = 1;
+		stbuf->st_nlink = 1;
 		stbuf->st_size = get_file_size(path);
 
 	} else if(is_directory(path)) {

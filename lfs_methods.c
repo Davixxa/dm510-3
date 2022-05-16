@@ -65,6 +65,21 @@ int get_current_file_index() {
     return current_file_index;
 }
 
+/* Attempt to find the file in the file index array. If it's there, return the index. Otherwise return -1. */
+int get_file_index(const char *path) {
+    path++;
+
+    for (int i = 0; i < current_file_index; i++) {
+        if (strcmp(path, dir_table->file_entries[i]) == 0) {
+            return i;
+        }
+
+    }
+
+    return -1;
+
+}
+
 struct file_list_entry get_file_by_index(int index) {
     if (index > current_file_index) 
         return;
@@ -107,8 +122,8 @@ void add_file(const char *file_name) {
     strcpy(dir_table->file_entries[current_file_index]->filename, file_name);
     dir_table->file_entries[current_file_index]->parent_folder_id = NULL; // Root only for now
     dir_table->file_entries[current_file_index]->file_size = 0;
-    dir_table->file_entries[current_file_index]->last_modified_timestamp = time();
-    dir_table->file_entries[current_file_index]->last_accessed_timestamp = time();
+    dir_table->file_entries[current_file_index]->last_modified_timestamp = time(NULL);
+    dir_table->file_entries[current_file_index]->last_accessed_timestamp = time(NULL);
     strcpy(dir_table->file_entries[current_file_index]->file_contents, "");
 
 
@@ -182,20 +197,7 @@ void write_file(const char *path, const char *content) {
 
 
 
-/* Attempt to find the file in the file index array. If it's there, return the index. Otherwise return -1. */
-int get_file_index(const char *path) {
-    path++;
 
-    for (int i = 0; i < current_file_index; i++) {
-        if (strcmp(path, dir_table->file_entries[i]) == 0) {
-            return i;
-        }
-
-    }
-
-    return -1;
-
-}
 
 
 void export_fs_to_json() {
