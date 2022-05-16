@@ -69,7 +69,7 @@ struct file_list_entry get_file_by_index(int index) {
     if (index > current_file_index) 
         return;
 
-    return file_entries[index];
+    return dir_table->file_entries[index];
 }
 
 
@@ -77,7 +77,7 @@ struct folder_list_entry get_folder_by_index(int index) {
     if (index > current_dir_index) 
         return;
 
-    return folder_entries[index];
+    return dir_table->folder_entries[index];
 }
 
 void create_empty_directory_table() {
