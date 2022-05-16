@@ -91,7 +91,7 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 // Theoretically this doesn't really do anything but it does provide the system with a file.
 int lfs_open( const char *path, struct fuse_file_info *fi ) {
     printf("open: (path=%s)\n", path);
-	fi->
+	fi->fh = get_file_by_index(get_file_index(path));
 	return 0; 
 }
 
@@ -102,6 +102,7 @@ int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fus
 	int index = get_file_index(path);
 	if (path == -1) 
 		return -1;
+	set_accessed_time_to_now(path);
 	char *content = get_file_by_index(index)->file_contents;	
 	memcpy( buf, content + offset, size );
 	return strlen(content)-offset;

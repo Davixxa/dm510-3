@@ -191,11 +191,20 @@ void write_file(const char *path, const char *content) {
     }
 
     strcpy(dir_table->file_entries[file_index]->file_contents, content);
-    dir_table->file_entries[file_index]_file_size = strlen(content));
-
+    dir_table->file_entries[file_index]->file_size = strlen(content));
+    dir_table->file_entries[file_index]->last_modified_timestamp = time(NULL);
+    dir_table->file_entries[file_index]->last_accessed_timestamp = time(NULL);
 }
 
+void set_accessed_time_to_now(const char *path) {
+    int file_index = get_file_index(path);
 
+    if (file_index == -1) {
+        return -ENOENT;
+    }
+    
+    dir_table->file_entries[file_index]->last_accessed_timestamp = time(NULL);
+}
 
 
 
