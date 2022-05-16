@@ -132,6 +132,8 @@ int lfs_write(const char *path, const char *buffer, size_t size, off_t offset, s
 int main( int argc, char *argv[] ) {
 	
 	// Write binary
+
+	dir_table = malloc(sizeof(Directory_Table));
 	disk = fopen("lfs_img.img", "r+b");
 
 	

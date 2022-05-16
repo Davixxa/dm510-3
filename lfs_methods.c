@@ -54,7 +54,7 @@ int current_file_index = -1;
 char file_content[256][256];
 int current_file_content_index = -1;
 
-struct Directory_Table dir_table = malloc(sizeof(Directory_Table));
+struct Directory_Table dir_table;
 
 
 int get_current_folder_index() {
@@ -67,7 +67,7 @@ int get_current_file_index() {
 
 struct file_list_entry get_file_by_index(int index) {
     if (index > current_file_index) 
-        return
+        return;
 
     return file_entries[index];
 }
@@ -75,7 +75,7 @@ struct file_list_entry get_file_by_index(int index) {
 
 struct folder_list_entry get_folder_by_index(int index) {
     if (index > current_dir_index) 
-        return
+        return;
 
     return folder_entries[index];
 }
