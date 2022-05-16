@@ -14,6 +14,7 @@ int lfs_release(const char *path, struct fuse_file_info *fi);
 int lfs_mkdir(const char *path, mode_t mode);
 int lfs_rmdir(const char *path, struct fuse_file_info *fi);
 int lfs_mknod(const char *path, mode_t mode, dev_t device);
+int lfs_write(const char *path, const char *buffer, size_t size, off_t offset, struct fuse_file_info *info);
 
 static struct fuse_operations lfs_oper = {
 	.getattr	= lfs_getattr,
@@ -26,7 +27,7 @@ static struct fuse_operations lfs_oper = {
 	.open	= lfs_open,
 	.read	= lfs_read,
 	.release = lfs_release,
-	.write = NULL,
+	.write = lfs_write,
 	.rename = NULL,
 	.utime = NULL
 };
@@ -73,26 +74,59 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 	filler(buf, "..", NULL, 0);
 
 
-	for()
+	for(int i = 0; i < get_current_folder_index(); i++) {
+		filler(buf, get_folder_by_index(i)->foldername, NULL, 0);
+	}
+
+	for(int i = 0; i < get_current_file_index(); i++) {
+		filler(buf, get_file_by_index(i)->filename, NULL, 0);
+	}
+
 
 	return 0;
 }
 
-//Permission
+// Theoretically this doesn't really do anything but it does provide the system with a file.
 int lfs_open( const char *path, struct fuse_file_info *fi ) {
     printf("open: (path=%s)\n", path);
-	return 0;
+	return get_current_file_index(get_file_index(path)); 
 }
+
+
 
 int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi ) {
     printf("read: (path=%s)\n", path);
-	memcpy( buf, "Hello\n", 6 );
-	return 6;
+	int index = get_file_index(path);
+	if (path == -1) 
+		return -1;
+	char *content = get_file_by_index(index)->file_contents;	
+	memcpy( buf, content + offset, size );
+	return strlen(content)-offset;
 }
 
 int lfs_release(const char *path, struct fuse_file_info *fi) {
 	printf("release: (path=%s)\n", path);
 	return 0;
+
+}
+
+
+int lfs_mknod(const char *path, mode_t mode, dev_t device) {
+	path++;
+	add_file(path);
+	return 0;
+}
+
+int lfs_mkdir(const char *path, mode_t mode) {
+	path++;
+	add_directory(path);
+	return 0;
+}
+
+
+int lfs_write(const char *path, const char *buffer, size_t size, off_t offset, struct fuse_file_info *info) {
+	write_file(path, buffer);
+	return size;
 }
 
 int main( int argc, char *argv[] ) {

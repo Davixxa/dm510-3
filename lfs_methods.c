@@ -2,6 +2,38 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <sys/types.h>
+#define DEFAULT_TABLE_SIZE 256
+#define NUM_DATA_POINTERS 27
+#define DIRECTORY 1
+#define FILE 2
+
+typedef struct folder_list_entry {
+    char foldername[256];
+    uint64_t parent_folder_id; // NULL if root
+
+    
+}
+
+
+typedef struct file_list_entry {
+    char filename[256]; // Filepath length
+    uint64_t parent_folder_id; // NULL if root
+    uint64_t file_id;
+    uint64_t file_size;
+    time_t last_modified_timestamp;
+    time_t last_accessed_timestamp;
+    char file_contents[1024];
+};
+
+typedef struct Directory_Table {
+
+    struct folder_list_entry folder_entries[DEFAULT_TABLE_SIZE];
+    struct file_list_entry file_entries[DEFAULT_TABLE_SIZE];
+
+
+};
 
 
 
@@ -13,6 +45,40 @@
 
 
 
+char dir_list[256][256];
+int current_dir_index = -1;
+
+struct file_list_entry file_list[256];
+int current_file_index = -1;
+
+char file_content[256][256];
+int current_file_content_index = -1;
+
+struct Directory_Table dir_table = malloc(sizeof(Directory_Table));
+
+
+int get_current_folder_index() {
+    return current_dir_index;
+}
+
+int get_current_file_index() {
+    return current_file_index;
+}
+
+struct file_list_entry get_file_by_index(int index) {
+    if (index > current_file_index) 
+        return
+
+    return file_entries[index];
+}
+
+
+struct folder_list_entry get_folder_by_index(int index) {
+    if (index > current_dir_index) 
+        return
+
+    return folder_entries[index];
+}
 
 void create_empty_directory_table() {
 
