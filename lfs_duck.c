@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #if FUSE_USE_VERSION < 25
 #define FUSE_USE_VERSION 25
@@ -40,8 +41,12 @@ static struct fuse_operations lfs_oper = {
 int lfs_getattr( const char *path, struct stat *stbuf ) {
 	int res = 0;
 	printf("getattr: (path=%s)\n", path);
-
 	memset(stbuf, 0, sizeof(struct stat));
+	stbuf->st_uid = getuid();
+	stbuf->st_gid = getgid();
+	stbuf->st_atime = time(NULL);
+	stbuf->st_mtime = time(NULL);
+
 	if( strcmp( path, "/" ) == 0 ) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
@@ -93,33 +98,25 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 int lfs_open( const char *path, struct fuse_file_info *fi ) {
     printf("open: (path=%s)\n", path);
 	fi->fh = get_file_by_index(get_file_index(path))->file_id;
-	return 0; 
+	return 0;
 }
 
 
 
 int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi ) {
     printf("read: (path=%s)\n", path);
-	printf("read: size: %ld\n", size);
-	if (path == NULL) 
+	if (path == NULL)
 		return -1;
 	int index = get_file_index(path);
-		if (index == -1) 
+		if (index == -1)
 			return -1;
 	set_accessed_time_to_now(path);
-	char *content = get_file_by_index(index)->file_contents;
-
-	// If size argument is larger than file, only copy the amount of data in file. Else just copy.
-	if (size > get_file_size(path)) {
-		memcpy( buf, content + offset, get_file_size(path) );
-		buf[offset+get_file_size(path)] = '\0';
-	} else {
-		memcpy( buf, content + offset, size );
-		buf[offset+size] = '\0';
-	}
-
-	
-	 // Null terminate string
+	struct file_list_entry* file = get_file_by_index(index);
+	char *content = file->file_contents;
+	if (size > file->file_size)
+		size = file->file_size;
+	memcpy( buf, content + offset, size );
+	buf[offset + size] = '\0';
 	return strlen(content)-offset;
 }
 
@@ -153,12 +150,12 @@ int lfs_rmdir(const char* dir) {
 }
 
 int main( int argc, char *argv[] ) {
-	
+
 	// Write binary
 
 	//disk = fopen("lfs_img.img", "r+b");
 
-	
+
 
 	fuse_main( argc, argv, &lfs_oper );
 

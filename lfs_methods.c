@@ -52,7 +52,7 @@ int get_file_index(const char *path) {
 }
 
 struct file_list_entry* get_file_by_index(int index) {
-    if (index > current_file_index)
+    if (index > current_file_index) 
         return NULL;
 
     return &dir_table.file_entries[index];
@@ -60,7 +60,7 @@ struct file_list_entry* get_file_by_index(int index) {
 
 
 struct folder_list_entry* get_folder_by_index(int index) {
-    if (index > current_dir_index)
+    if (index > current_dir_index) 
         return NULL;
 
     return &dir_table.folder_entries[index];
@@ -75,9 +75,9 @@ struct folder_list_entry* get_folder_by_index(int index) {
 */
 void add_directory(const char *dir_name) {
     current_dir_index++;
-
+    
     strcpy(dir_table.folder_entries[current_dir_index].foldername, dir_name);
-    dir_table.folder_entries[current_dir_index].parent_folder_id = -1;
+    dir_table.folder_entries[current_dir_index].parent_folder_id = -1; 
     dir_table.folder_entries[current_dir_index].last_accessed_timestamp = time(0);
     dir_table.folder_entries[current_dir_index].last_modified_timestamp = time(0);
 
@@ -102,7 +102,7 @@ void add_file(const char *file_name) {
 
 
 
-/*
+/* 
 * Checks if the name given is in the directory list. If it is, return true, if not, return false.
 *
 */
@@ -111,7 +111,6 @@ int is_directory(const char *path) {
 
     for ( int i = 0; i <= current_dir_index; i++) {
         struct folder_list_entry current_folder = dir_table.folder_entries[i];
-        printf("%s %s\n", path, current_folder.foldername);
         if (strcmp(path, current_folder.foldername) == 0) {
             return 1;
         }
@@ -160,6 +159,8 @@ int write_file(const char *path, const char *content) {
         return -ENOENT;
     }
 
+
+    printf("write_file: content:%s\n", content);
     strcpy(dir_table.file_entries[file_index].file_contents, content);
     dir_table.file_entries[file_index].file_size = strlen(content);
     dir_table.file_entries[file_index].last_modified_timestamp = time(0);
@@ -183,7 +184,7 @@ int set_accessed_time_to_now(const char *path) {
 
 
 void export_fs_to_json() {
-    // do export logic
+    // do export logic  
 }
 
 
