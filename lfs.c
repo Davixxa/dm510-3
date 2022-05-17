@@ -100,6 +100,7 @@ int lfs_open( const char *path, struct fuse_file_info *fi ) {
 
 int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info *fi ) {
     printf("read: (path=%s)\n", path);
+	printf("read: size: %d\n", size);
 	if (path == NULL) 
 		return -1;
 	int index = get_file_index(path);
