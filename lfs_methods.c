@@ -10,36 +10,6 @@
 #define DIRECTORY 1
 #define FILE 2
 
-typedef struct folder_list_entry {
-    char foldername[256];
-    uint64_t parent_folder_id; // NULL if root
-
-    
-};
-
-
-typedef struct file_list_entry {
-    char filename[256]; // Filepath length
-    uint64_t parent_folder_id; // NULL if root
-    uint64_t file_id;
-    uint64_t file_size;
-    time_t last_modified_timestamp;
-    time_t last_accessed_timestamp;
-    char file_contents[1024];
-};
-
-typedef struct Directory_Table {
-
-    struct folder_list_entry folder_entries[DEFAULT_TABLE_SIZE];
-    struct file_list_entry file_entries[DEFAULT_TABLE_SIZE];
-
-
-};
-
-
-
-
-
 
 
 
@@ -81,19 +51,19 @@ int get_file_index(const char *path) {
 
 }
 
-struct file_list_entry get_file_by_index(int index) {
+struct file_list_entry* get_file_by_index(int index) {
     if (index > current_file_index) 
         return;
 
-    return dir_table.file_entries[index];
+    return &dir_table.file_entries[index];
 }
 
 
-struct folder_list_entry get_folder_by_index(int index) {
+struct folder_list_entry* get_folder_by_index(int index) {
     if (index > current_dir_index) 
         return;
 
-    return dir_table.folder_entries[index];
+    return &dir_table.folder_entries[index];
 }
 
 
@@ -107,7 +77,7 @@ void add_directory(const char *dir_name) {
     current_dir_index++;
     
     strcpy(dir_table.folder_entries[current_dir_index].foldername, dir_name);
-    dir_table.folder_entries[current_dir_index].parent_folder_id = NULL; 
+    dir_table.folder_entries[current_dir_index].parent_folder_id = -1; 
 
 
 }
@@ -117,7 +87,7 @@ void add_file(const char *file_name) {
 
     current_file_index++;
     strcpy(dir_table.file_entries[current_file_index].filename, file_name);
-    dir_table.file_entries[current_file_index].parent_folder_id = NULL; // Root only for now
+    dir_table.file_entries[current_file_index].parent_folder_id = -1; // Root only for now
     dir_table.file_entries[current_file_index].file_size = 0;
     dir_table.file_entries[current_file_index].last_modified_timestamp = time(NULL);
     dir_table.file_entries[current_file_index].last_accessed_timestamp = time(NULL);
