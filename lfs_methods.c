@@ -180,7 +180,7 @@ int write_file(const char *path, const char *content, size_t size) {
     dir_table.file_entries[file_index].file_size = strlen(dir_table.file_entries[file_index].file_contents);
     dir_table.file_entries[file_index].last_modified_timestamp = time(0);
     dir_table.file_entries[file_index].last_accessed_timestamp = time(0);
-    return strlen(strlen(dir_table.file_entries[file_index].file_contents)); // return amount of characters written
+    return strlen(dir_table.file_entries[file_index].file_contents); // return amount of characters written
 
 }
 
