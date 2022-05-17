@@ -6,8 +6,8 @@
 
 #define DEFAULT_TABLE_SIZE 256
 #define NUM_DATA_POINTERS 27
-#define DIRECTORY 1
-#define FILE 2
+//#define DIRECTORY 1
+//#define FILE 2
 
 struct folder_list_entry {
     char foldername[256];
