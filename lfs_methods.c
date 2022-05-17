@@ -7,31 +7,21 @@
 #include "lfs_methods.h"
 #define DEFAULT_TABLE_SIZE 256
 #define NUM_DATA_POINTERS 27
-#define DIRECTORY 1
-#define FILE 2
 
 
 
-
-
-
-
-char dir_list[256][256];
 int current_dir_index = -1;
 
-struct file_list_entry file_list[256];
 int current_file_index = -1;
-
-char file_content[256][256];
-int current_file_content_index = -1;
 
 struct Directory_Table dir_table;
 
-
+/* Confusingly named, it gets the current largest set index value of the folder array. */
 int get_current_folder_index() {
     return current_dir_index;
 }
 
+/* Confusingly named, it gets the current largest set index value of the file array. */
 int get_current_file_index() {
     return current_file_index;
 }
@@ -51,6 +41,8 @@ int get_file_index(const char *path) {
 
 }
 
+
+/* Attempt to find the file in the folder index array. If it's there, return the index. Otherwise return -1. */
 int get_folder_index(const char *path) {
     path++;
 
@@ -65,6 +57,10 @@ int get_folder_index(const char *path) {
 
 }
 
+/* 
+* Return pointer to file at given index in the folder array.
+* If out of bounds, return a null pointer.
+*/
 struct file_list_entry* get_file_by_index(int index) {
     if (index > current_file_index) 
         return NULL;
@@ -73,6 +69,10 @@ struct file_list_entry* get_file_by_index(int index) {
 }
 
 
+/* 
+* Return pointer to folder at given index in the folder array.
+* If out of bounds, return a null pointer.
+*/
 struct folder_list_entry* get_folder_by_index(int index) {
     if (index > current_dir_index) 
         return NULL;
@@ -83,10 +83,7 @@ struct folder_list_entry* get_folder_by_index(int index) {
 
 
 
-/*
-* Set the folder name and get the parent. Currently that is root level only.
-*
-*/
+/* Set the folder name and get the parent. Currently that is root level only. */
 void add_directory(const char *dir_name) {
     current_dir_index++;
     
@@ -98,7 +95,7 @@ void add_directory(const char *dir_name) {
 
 }
 
-
+/* Creates a new empty file with the given name. */
 void add_file(const char *file_name) {
 
     current_file_index++;
@@ -116,12 +113,9 @@ void add_file(const char *file_name) {
 
 
 
-/* 
-* Checks if the name given is in the directory list. If it is, return true, if not, return false.
-*
-*/
+/* Checks if the name given is in the directory list. If it is, return true, if not, return false. */
 int is_directory(const char *path) {
-    path++; // Eliminate first / in path
+    path++; // Eliminate first "/" in path
 
     for ( int i = 0; i <= current_dir_index; i++) {
         struct folder_list_entry current_folder = dir_table.folder_entries[i];
@@ -134,9 +128,9 @@ int is_directory(const char *path) {
     return 0;
 }
 
-
+/* Checks if the name given is in the files list. If it is, return true. If not, false. */
 int is_file(const char *path) {
-    path++; // Eliminate /
+    path++; // Eliminate initial "/".
 
     for (int i = 0; i <= current_file_index; i++) {
         struct file_list_entry current_file = dir_table.file_entries[i];
@@ -149,7 +143,7 @@ int is_file(const char *path) {
 
 }
 
-
+/* Auxilliary function to help with displaying values without having to pass through the entire file.*/
 int get_file_size(const char *path) {
 
         path++; // Eliminate /
@@ -165,16 +159,17 @@ int get_file_size(const char *path) {
 
 }
 
-
+/* Writes size amount of bytes from buffer "content" to file at "path". */
 int write_file(const char *path, const char *content, size_t size) {
+   
+    //  If the file doesn't exist, it doesn't make sense to try to write to it.
     int file_index = get_file_index(path);
-
     if (file_index == -1) {
         return -ENOENT;
     }
 
 
-    printf("write_file: content:%s\n", content);
+    // Copy the data to the file and null-terminate it, making sure to add the necessary metadata.
     memcpy(dir_table.file_entries[file_index].file_contents, content, size);
     dir_table.file_entries[file_index].file_contents[size] = '\0';
     dir_table.file_entries[file_index].file_size = strlen(dir_table.file_entries[file_index].file_contents);
@@ -184,6 +179,8 @@ int write_file(const char *path, const char *content, size_t size) {
 
 }
 
+
+/* Auxillary function, used as a quick shortcut to set accessed time when reading a file. */
 int set_accessed_time_to_now(const char *path) {
     int file_index = get_file_index(path);
 
