@@ -107,7 +107,10 @@ int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fus
 		if (index == -1) 
 			return -1;
 	set_accessed_time_to_now(path);
-	char *content = get_file_by_index(index)->file_contents;	
+	char *content = get_file_by_index(index)->file_contents;
+	if (size > get_file_size(path))
+		size = get_file_size(path); // Quite frankly it shouldn't read beyond.
+		
 	memcpy( buf, content + offset, size );
 	buf[offset+size] = '\0'; // Null terminate string
 	return strlen(content)-offset;
