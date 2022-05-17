@@ -53,7 +53,7 @@ int get_file_index(const char *path) {
 
 struct file_list_entry* get_file_by_index(int index) {
     if (index > current_file_index) 
-        return;
+        return NULL;
 
     return &dir_table.file_entries[index];
 }
@@ -61,7 +61,7 @@ struct file_list_entry* get_file_by_index(int index) {
 
 struct folder_list_entry* get_folder_by_index(int index) {
     if (index > current_dir_index) 
-        return;
+        return NULL;
 
     return &dir_table.folder_entries[index];
 }
@@ -150,7 +150,7 @@ int get_file_size(const char *path) {
 }
 
 
-void write_file(const char *path, const char *content) {
+int write_file(const char *path, const char *content) {
     int file_index = get_file_index(path);
 
     if (file_index == -1) {
@@ -163,7 +163,7 @@ void write_file(const char *path, const char *content) {
     dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
 }
 
-void set_accessed_time_to_now(const char *path) {
+int set_accessed_time_to_now(const char *path) {
     int file_index = get_file_index(path);
 
     if (file_index == -1) {
