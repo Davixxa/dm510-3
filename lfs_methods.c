@@ -159,6 +159,8 @@ int write_file(const char *path, const char *content) {
         return -ENOENT;
     }
 
+
+    printf("write_file: content:%s\n", content);
     strcpy(dir_table.file_entries[file_index].file_contents, content);
     dir_table.file_entries[file_index].file_size = strlen(content);
     dir_table.file_entries[file_index].last_modified_timestamp = time(0);
