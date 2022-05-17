@@ -108,11 +108,18 @@ int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fus
 			return -1;
 	set_accessed_time_to_now(path);
 	char *content = get_file_by_index(index)->file_contents;
-	if (size > get_file_size(path))
-		size = get_file_size(path); // Quite frankly it shouldn't read beyond.
-		
-	memcpy( buf, content + offset, size );
-	buf[offset+size] = '\0'; // Null terminate string
+
+	// If size argument is larger than file, only copy the amount of data in file. Else just copy.
+	if (size > get_file_size(path)) {
+		memcpy( buf, content + offset, get_file_size(path) );
+		buf[offset+get_file_size(path)] = '\0';
+	} else {
+		memcpy( buf, content + offset, size );
+		buf[offset+size] = '\0';
+	}
+
+	
+	 // Null terminate string
 	return strlen(content)-offset;
 }
 
