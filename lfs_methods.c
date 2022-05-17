@@ -89,8 +89,8 @@ void add_file(const char *file_name) {
     strcpy(dir_table.file_entries[current_file_index].filename, file_name);
     dir_table.file_entries[current_file_index].parent_folder_id = -1; // Root only for now
     dir_table.file_entries[current_file_index].file_size = 0;
-    dir_table.file_entries[current_file_index].last_modified_timestamp = time(NULL);
-    dir_table.file_entries[current_file_index].last_accessed_timestamp = time(NULL);
+    dir_table.file_entries[current_file_index].last_modified_timestamp = time(0);
+    dir_table.file_entries[current_file_index].last_accessed_timestamp = time(0);
     strcpy(dir_table.file_entries[current_file_index].file_contents, "");
 
 
@@ -159,8 +159,8 @@ int write_file(const char *path, const char *content) {
 
     strcpy(dir_table.file_entries[file_index].file_contents, content);
     dir_table.file_entries[file_index].file_size = strlen(content);
-    dir_table.file_entries[file_index].last_modified_timestamp = time(NULL);
-    dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
+    dir_table.file_entries[file_index].last_modified_timestamp = time(0);
+    dir_table.file_entries[file_index].last_accessed_timestamp = time(0);
     return strlen(content); // return amount of characters written
 
 }
@@ -172,7 +172,7 @@ int set_accessed_time_to_now(const char *path) {
         return -ENOENT;
     }
 
-    dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
+    dir_table.file_entries[file_index].last_accessed_timestamp = time(0);
     return 0;
 }
 
