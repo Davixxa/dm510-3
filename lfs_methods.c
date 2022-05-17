@@ -161,6 +161,8 @@ int write_file(const char *path, const char *content) {
     dir_table.file_entries[file_index].file_size = strlen(content);
     dir_table.file_entries[file_index].last_modified_timestamp = time(NULL);
     dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
+    return strlen(content); // return amount of characters written
+
 }
 
 int set_accessed_time_to_now(const char *path) {
@@ -171,6 +173,7 @@ int set_accessed_time_to_now(const char *path) {
     }
 
     dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
+    return 0;
 }
 
 
