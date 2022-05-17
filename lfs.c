@@ -55,6 +55,8 @@ int lfs_getattr( const char *path, struct stat *stbuf ) {
 	} else if(is_directory(path) == 1) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
+		stbuf->st_atime = get_folder_by_index(get_folder_index(path))->last_accessed_timestamp;
+		stbuf->st_atime = get_folder_by_index(get_folder_index(path))->last_modified_timestamp;
 	} else {
 		printf("Reaches else\nCurrent Folder Index: %d\nCurrent File Index: %d\nFolder at current folder index: %s\n", get_current_folder_index(), get_current_file_index(), get_folder_by_index(get_current_folder_index())->foldername); // It reaches here after mkdir. Why?
 		res = -ENOENT;

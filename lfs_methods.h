@@ -39,6 +39,8 @@ int get_current_file_index();
 /* Attempt to find the file in the file index array. If it's there, return the index. Otherwise return -1. */
 int get_file_index(const char *path);
 
+int get_folder_index(const char *path);
+
 struct file_list_entry* get_file_by_index(int index);
 struct folder_list_entry* get_folder_by_index(int index);
 

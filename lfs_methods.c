@@ -51,6 +51,20 @@ int get_file_index(const char *path) {
 
 }
 
+int get_folder_index(const char *path) {
+    path++;
+
+    for (int i = 0; i <= current_file_index; i++) {
+        if (strcmp(path, dir_table.folder_entries[i].foldername) == 0) {
+            return i;
+        }
+
+    }
+
+    return -1;
+
+}
+
 struct file_list_entry* get_file_by_index(int index) {
     if (index > current_file_index) 
         return NULL;
