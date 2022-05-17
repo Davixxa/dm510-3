@@ -40,7 +40,7 @@ int get_current_file_index() {
 int get_file_index(const char *path) {
     path++;
 
-    for (int i = 0; i < current_file_index; i++) {
+    for (int i = 0; i <= current_file_index; i++) {
         if (strcmp(path, dir_table.file_entries[i].filename) == 0) {
             return i;
         }
@@ -109,7 +109,7 @@ void add_file(const char *file_name) {
 int is_directory(const char *path) {
     path++; // Eliminate first / in path
 
-    for ( int i = 0; i < current_dir_index; i++) {
+    for ( int i = 0; i <= current_dir_index; i++) {
         struct folder_list_entry current_folder = dir_table.folder_entries[i];
         if (strcmp(path, current_folder.foldername) == 0) {
             return 1;
@@ -124,7 +124,7 @@ int is_directory(const char *path) {
 int is_file(const char *path) {
     path++; // Eliminate /
 
-    for (int i = 0; i < current_file_index; i++) {
+    for (int i = 0; i <= current_file_index; i++) {
         struct file_list_entry current_file = dir_table.file_entries[i];
         if (strcmp(path, current_file.filename) == 0) {
             return 1;
@@ -140,7 +140,7 @@ int get_file_size(const char *path) {
 
         path++; // Eliminate /
 
-    for (int i = 0; i < current_file_index; i++) {
+    for (int i = 0; i <= current_file_index; i++) {
         struct file_list_entry current_file = dir_table.file_entries[i];
         if (strcmp(path, current_file.filename) == 0) {
             return current_file.file_size;

@@ -77,11 +77,11 @@ int lfs_readdir( const char *path, void *buf, fuse_fill_dir_t filler, off_t offs
 	filler(buf, "..", NULL, 0);
 
 
-	for(int i = 0; i < get_current_folder_index(); i++) {
+	for(int i = 0; i <= get_current_folder_index(); i++) {
 		filler(buf, get_folder_by_index(i)->foldername, NULL, 0);
 	}
 
-	for(int i = 0; i < get_current_file_index(); i++) {
+	for(int i = 0; i <= get_current_file_index(); i++) {
 		filler(buf, get_file_by_index(i)->filename, NULL, 0);
 	}
 
@@ -108,6 +108,7 @@ int lfs_read( const char *path, char *buf, size_t size, off_t offset, struct fus
 	set_accessed_time_to_now(path);
 	char *content = get_file_by_index(index)->file_contents;	
 	memcpy( buf, content + offset, size );
+	buf[offset+size] = '\0'; // Null terminate string
 	return strlen(content)-offset;
 }
 
