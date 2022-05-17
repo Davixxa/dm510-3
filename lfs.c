@@ -142,7 +142,7 @@ int lfs_mkdir(const char *path, mode_t mode) {
 
 
 int lfs_write(const char *path, const char *buffer, size_t size, off_t offset, struct fuse_file_info *info) {
-	write_file(path, buffer);
+	write_file(path, buffer, size);
 	return size;
 }
 

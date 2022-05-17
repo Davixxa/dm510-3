@@ -166,7 +166,7 @@ int get_file_size(const char *path) {
 }
 
 
-int write_file(const char *path, const char *content) {
+int write_file(const char *path, const char *content, size_t size) {
     int file_index = get_file_index(path);
 
     if (file_index == -1) {
@@ -175,11 +175,12 @@ int write_file(const char *path, const char *content) {
 
 
     printf("write_file: content:%s\n", content);
-    strcpy(dir_table.file_entries[file_index].file_contents, content);
-    dir_table.file_entries[file_index].file_size = strlen(content);
+    memcpy(dir_table.file_entries[file_index].file_contents, content, size);
+    dir_table.file_entries[file_index].file_contents[size] = '\0';
+    dir_table.file_entries[file_index].file_size = strlen(dir_table.file_entries[file_index].file_contents);
     dir_table.file_entries[file_index].last_modified_timestamp = time(0);
     dir_table.file_entries[file_index].last_accessed_timestamp = time(0);
-    return strlen(content); // return amount of characters written
+    return strlen(strlen(dir_table.file_entries[file_index].file_contents)); // return amount of characters written
 
 }
 
