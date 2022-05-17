@@ -78,6 +78,8 @@ void add_directory(const char *dir_name) {
     
     strcpy(dir_table.folder_entries[current_dir_index].foldername, dir_name);
     dir_table.folder_entries[current_dir_index].parent_folder_id = -1; 
+    dir_table.folder_entries[current_dir_index].last_accessed_timestamp = time(0);
+    dir_table.folder_entries[current_dir_index].last_modified_timestamp = time(0);
 
 
 }

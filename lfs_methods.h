@@ -12,6 +12,8 @@
 struct folder_list_entry {
     char foldername[256];
     uint64_t parent_folder_id; // -1 if root
+    time_t last_modified_timestamp;
+    time_t last_accessed_timestamp;
 };
 
 struct file_list_entry {
