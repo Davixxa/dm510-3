@@ -56,7 +56,7 @@ int lfs_getattr( const char *path, struct stat *stbuf ) {
 		stbuf->st_mode = S_IFDIR | 0755;
 		stbuf->st_nlink = 2;
 	} else {
-		print("Reaches else");
+		printf("Reaches else");
 		res = -ENOENT;
 	}
 	return res;
