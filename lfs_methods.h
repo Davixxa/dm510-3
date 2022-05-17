@@ -60,7 +60,7 @@ void add_file(const char *file_name);
 int is_directory(const char *path);
 int is_file(const char *path);
 int get_file_size(const char *path);
-int write_file(const char *path, const char *content);
+int write_file(const char *path, const char *content, size_t size);
 int set_accessed_time_to_now(const char *path);
 
 #endif
