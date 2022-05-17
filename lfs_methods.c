@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <sys/types.h>
+#include "lfs_methods.h"
 #define DEFAULT_TABLE_SIZE 256
 #define NUM_DATA_POINTERS 27
 #define DIRECTORY 1
@@ -70,7 +71,7 @@ int get_file_index(const char *path) {
     path++;
 
     for (int i = 0; i < current_file_index; i++) {
-        if (strcmp(path, dir_table->file_entries[i]) == 0) {
+        if (strcmp(path, dir_table.file_entries[i].filename) == 0) {
             return i;
         }
 
@@ -84,7 +85,7 @@ struct file_list_entry get_file_by_index(int index) {
     if (index > current_file_index) 
         return;
 
-    return dir_table->file_entries[index];
+    return dir_table.file_entries[index];
 }
 
 
@@ -92,13 +93,9 @@ struct folder_list_entry get_folder_by_index(int index) {
     if (index > current_dir_index) 
         return;
 
-    return dir_table->folder_entries[index];
+    return dir_table.folder_entries[index];
 }
 
-void create_empty_directory_table() {
-
-
-}
 
 
 
@@ -109,8 +106,8 @@ void create_empty_directory_table() {
 void add_directory(const char *dir_name) {
     current_dir_index++;
     
-    strcpy(dir_table->folder_entries[current_dir_index], dir_name);
-    dir_table->folder_entries[current_dir_index] = NULL; 
+    strcpy(dir_table.folder_entries[current_dir_index].foldername, dir_name);
+    dir_table.folder_entries[current_dir_index].parent_folder_id = NULL; 
 
 
 }
@@ -119,12 +116,12 @@ void add_directory(const char *dir_name) {
 void add_file(const char *file_name) {
 
     current_file_index++;
-    strcpy(dir_table->file_entries[current_file_index]->filename, file_name);
-    dir_table->file_entries[current_file_index]->parent_folder_id = NULL; // Root only for now
-    dir_table->file_entries[current_file_index]->file_size = 0;
-    dir_table->file_entries[current_file_index]->last_modified_timestamp = time(NULL);
-    dir_table->file_entries[current_file_index]->last_accessed_timestamp = time(NULL);
-    strcpy(dir_table->file_entries[current_file_index]->file_contents, "");
+    strcpy(dir_table.file_entries[current_file_index].filename, file_name);
+    dir_table.file_entries[current_file_index].parent_folder_id = NULL; // Root only for now
+    dir_table.file_entries[current_file_index].file_size = 0;
+    dir_table.file_entries[current_file_index].last_modified_timestamp = time(NULL);
+    dir_table.file_entries[current_file_index].last_accessed_timestamp = time(NULL);
+    strcpy(dir_table.file_entries[current_file_index].file_contents, "");
 
 
 }
@@ -141,8 +138,8 @@ int is_directory(const char *path) {
     path++; // Eliminate first / in path
 
     for ( int i = 0; i < current_dir_index; i++) {
-        struct folder_list_entry current_folder = dir_table->folder_entries[i];
-        if (strcmp(path, current_folder->foldername) == 0) {
+        struct folder_list_entry current_folder = dir_table.folder_entries[i];
+        if (strcmp(path, current_folder.foldername) == 0) {
             return 1;
         }
 
@@ -156,8 +153,8 @@ int is_file(const char *path) {
     path++; // Eliminate /
 
     for (int i = 0; i < current_file_index; i++) {
-        struct file_list_entry current_file = dir_table->file_entries[i];
-        if (strcmp(path, current_file->filename) == 0) {
+        struct file_list_entry current_file = dir_table.file_entries[i];
+        if (strcmp(path, current_file.filename) == 0) {
             return 1;
         }
     }
@@ -172,9 +169,9 @@ int get_file_size(const char *path) {
         path++; // Eliminate /
 
     for (int i = 0; i < current_file_index; i++) {
-        struct file_list_entry current_file = dir_table->file_entries[i];
-        if (strcmp(path, current_file->filename) == 0) {
-            return current_file->file_size;
+        struct file_list_entry current_file = dir_table.file_entries[i];
+        if (strcmp(path, current_file.filename) == 0) {
+            return current_file.file_size;
         }
     }
 
@@ -190,10 +187,10 @@ void write_file(const char *path, const char *content) {
         return -ENOENT;
     }
 
-    strcpy(dir_table->file_entries[file_index]->file_contents, content);
-    dir_table->file_entries[file_index]->file_size = strlen(content));
-    dir_table->file_entries[file_index]->last_modified_timestamp = time(NULL);
-    dir_table->file_entries[file_index]->last_accessed_timestamp = time(NULL);
+    strcpy(dir_table.file_entries[file_index].file_contents, content);
+    dir_table.file_entries[file_index].file_size = strlen(content);
+    dir_table.file_entries[file_index].last_modified_timestamp = time(NULL);
+    dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
 }
 
 void set_accessed_time_to_now(const char *path) {
@@ -202,8 +199,8 @@ void set_accessed_time_to_now(const char *path) {
     if (file_index == -1) {
         return -ENOENT;
     }
-    
-    dir_table->file_entries[file_index]->last_accessed_timestamp = time(NULL);
+
+    dir_table.file_entries[file_index].last_accessed_timestamp = time(NULL);
 }
 
 
