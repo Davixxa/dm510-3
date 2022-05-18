@@ -168,6 +168,12 @@ int write_file(const char *path, const char *content, size_t size) {
         return -ENOENT;
     }
 
+    // If size is above max file size, it could cause some major concerns with regards to undefined behaviour.
+    // Therefore I'm limiting the buffer size, while keeping room for guaranteeing room for null termination.
+    if (size >= MAX_FILE_SIZE) {
+        size = MAX_FILE_SIZE -1;
+    }
+
 
     // Copy the data to the file and null-terminate it, making sure to add the necessary metadata.
     memcpy(dir_table.file_entries[file_index].file_contents, content, size);

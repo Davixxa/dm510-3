@@ -6,6 +6,7 @@
 
 // Amount of files and folders the file system supports.
 #define DEFAULT_TABLE_SIZE 256
+#define MAX_FILE_SIZE 1024
 
 
 struct folder_list_entry {
@@ -22,7 +23,7 @@ struct file_list_entry {
     uint64_t file_size;
     time_t last_modified_timestamp;
     time_t last_accessed_timestamp;
-    char file_contents[1024];
+    char file_contents[MAX_FILE_SIZE];
 };
 
 struct Directory_Table {
